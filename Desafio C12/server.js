@@ -12,19 +12,28 @@ app.get('/', (req, res) => {
     res.sendFile('index.html')
 });
 
-const productos =[];
+const productos =[
+    {
+        titulo: "tomates",
+        precio: "$250",
+    },
+    {
+        titulo: "peras",
+        precio: "$200",
+    }
+];
 const mensajes = [];
 
 io.on('connection', (socket) =>{
     console.log('cliente connected');
 
     socket.emit("productos", productos);
-    socket.emit("mensajes", mensajes);
-
-    socket.on("new-producto", (data) => {
+        socket.on("new-producto", (data) => {
         productos.push(data);
         io.sockets.emit("productos", productos);
     });
+
+    socket.emit("mensajes", mensajes);
 
     socket.on("new-mensaje", (msj) =>{
         mensajes.push(msj);

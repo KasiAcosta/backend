@@ -16,7 +16,11 @@ function render(data){
     document.getElementById("productos").innerHTML = html;
 };
 
-function render(msj){
+socket.on("mensajes", (msj) =>{
+    renderM(msj);
+});
+
+function renderM(msj){
     const html = msj.map((elementos) =>{
         return `
         <div>

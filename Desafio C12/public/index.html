@@ -20,35 +20,14 @@
         <input type="submit" value="Enviar" />
     </form>
 
-    <span> </span>
-   
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"> </script>
-
-    <script>
-        const template = Handlebars.compile(
-            `<h1>Productos ya cargados</h1>
-            <ul>
-                <li>{{titulo}}</li>
-                <li>{{precio}}</li>
-                
-                </ul>`
-        )
-            const html = template({
-                titulo: "Tomates",
-                precio: "$250",
-            })
-            document.querySelector("span").innerHTML=html
-
-    </script>
- 
-
-    <h3>Chat de usuarios</h3>
-    <div id="mensajes"></div>
-    <form onsubmit="return addMsj(this)">
-        <input type="mail" id="mail" placeholder="Ingrese su email" />
-        <input type="text" id="mensaje" placeholder="Su mensaje" />
-        <input type="submit" value="Enviar" />
-    </form>
+ <h3>Chat de usuarios</h3>
+ <div id="mensajes"></div>
+ <form onsubmit="return addMsj(this)">
+    <input type="email" id="mail" placeholder="Ingrese su email" />
+    <input type="text" id="mensaje" placeholder="Su mensaje" />
+    <input type="submit" value="Enviar" />
+</form>
+    
 </body>
 
 </html>
