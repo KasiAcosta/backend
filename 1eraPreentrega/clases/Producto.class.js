@@ -1,7 +1,25 @@
+import fs from "fs";
+
 export default class Producto{
     static productos = [];
     constructor(){
         this.id = 0;
+    }
+
+    async guardar(prod){
+        try{
+        prod.id = ++this.id;
+        prod.timeStamp = Date.now();
+        Producto.productos.push(prod);
+        await fs.promises.writeFile(
+            "./productosList.txt",
+            JSON.stringify(Producto.productos, null, 2),
+            "utf-8"
+        )
+        return prod;
+    } catch (e){
+        console.log(e);
+    }
     }
 
     listar(id){
@@ -15,12 +33,7 @@ export default class Producto{
         : { error: "no hay productos cargados"};
     }
 
-    guardar(prod){
-        prod.id = ++this.id;
-        prod.timeStamp = Date.now();
-        Producto.productos.push(prod);
-        return prod;
-    }
+    
 
     actualizar(prod, id){
         prod.id = Number(id);

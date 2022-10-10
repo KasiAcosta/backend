@@ -1,4 +1,5 @@
 import Producto from "./Producto.class.js";
+import fs from "fs";
 
 export default class Carrito{
     constructor(){
@@ -7,9 +8,20 @@ export default class Carrito{
         this.id = 1;
     }
 
-    listar(id){
-        let prod = this.carritos.find((carr) => carr.id == id);
-        return prod || { error: "carrito no encontrado" };
+    async crearCarrito(){
+        try{
+        const carr = { id: this.id++, timeStamp: Date.now(), productos: [] };
+        this.carritos.push(carr);
+        
+        await fs.promises.writeFile(
+            "./carritoList.txt",
+            JSON.stringify(this.carritos, null, 2),
+            "utf-8"
+        )
+        return carr
+    } catch (e){
+        console.log(e)
+    }
     }
 
     listarAll(){
@@ -18,11 +30,11 @@ export default class Carrito{
         : { error: "no hay carritos cargados"};
     }
 
-    crearCarrito(){
-        const carr = { id: this.id++, timeStamp: Date.now(), productos: [] };
-        this.carritos.push(carr);
-        return carr;
+    listar(id){
+        let prod = this.carritos.find((carr) => carr.id == id);
+        return prod || { error: "carrito no encontrado" };
     }
+
 
     guardarProductoEnCarrito(idProd, idCarrito) {
         console.log(idProd);
