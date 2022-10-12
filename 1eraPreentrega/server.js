@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/productos", routerProductos);
 app.use("/carritos", routerCarrito);
 
-const PORT = 8080;
+const PORT = 8081;
 
 const server = app.listen(PORT, () =>{
     console.log(`Servidor http escuchando en el puerto ${PORT}`);

@@ -5,23 +5,24 @@ const router = express.Router();
 
 const carrito = new Carrito();
 
-router.post("/", (req, res) =>{
-    const carritoCreado = carrito.crearCarrito();
+router.post("/", async (req, res) =>{
+    const carritoCreado = await carrito.crearCarrito();
     res.send(carritoCreado);
 });
 
-router.delete("/:id", (req, res) =>{
-    const carrito = carrito.borrar(req.params.id);
+router.delete("/:id", async (req, res) =>{
+    const carrito = await carrito.borrar(req.params.id);
     res.send(carrito);
 });
 
-router.get("/", (req, res) => {
-    const listaCarritos = carrito.listarAll();
+router.get("/", async (req, res) => {
+    res.type('json')
+    const listaCarritos = await carrito.listarAll();
     res.send(listaCarritos);
 });
 
-router.post("/:id/productos/:idPrd", (req, res) =>{
-    const carritoBorrado = carrito.guardarProductoEnCarrito(
+router.post("/:id/productos/:idPrd", async (req, res) =>{
+    const carritoBorrado = await carrito.guardarProductoEnCarrito(
         req.params.idPrd,
         req.params.id
     );

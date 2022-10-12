@@ -12,24 +12,24 @@ function validarAdmin(req, res, next){
     }
 }
 
-router.post("/", validarAdmin,(req, res) =>{
+router.post("/", validarAdmin, async (req, res) =>{
     console.log(req.body);
-    const productoCreado = producto.guardar(req.body);
+    const productoCreado = await producto.guardar(req.body);
     res.send(productoCreado);
 });
 
-router.delete("/:id", validarAdmin, (req, res) =>{
-    const productoBorrado = producto.borrar(req.params.body);
+router.delete("/:id", validarAdmin, async (req, res) =>{
+    const productoBorrado = await producto.borrar(req.params.body);
     res.send(productoBorrado);
 });
 
-router.get("/", (req, res) =>{
-    const listaProducto = producto.listarAll();
+router.get("/", async (req, res) =>{
+    const listaProducto = await producto.listarAll();
     res.send(listaProducto);
 });
 
-router.get("/:id", (req, res) => {
-    const productoBuscado = producto.listar(req.params.id);
+router.get("/:id", async (req, res) => {
+    const productoBuscado = await producto.listar(req.params.id);
     res.send(productoBuscado);
 });
 
