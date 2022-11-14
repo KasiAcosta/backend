@@ -66,3 +66,24 @@ const renderComp = (msj, denormMsjs) => {
     const compresion = ((msjLength - denormMsjsLength) / msjLength * 100).toFixed(2);
     comp.innerHTML = `(Compresion: ${compresion}%)`;
 }
+
+//log
+
+fetch ("/getUserName")
+.then(response => response.json())
+.then(data =>{
+    userName = data.user;
+    document.getElementById("userName").innerHTML=
+    `<div class = "titleLogin">Bienvenid@ ${userName}</div> `
+})
+.catch(error => console.log(error))
+
+document.getElementById("logout").addEventListener
+('click', (e) => {
+    e.preventDefault()
+    fetch("/logout")
+    .then(response => response.json())
+    .finally(() => {
+        window.location.href = "loguotMsj";
+    })
+})

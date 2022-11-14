@@ -12,6 +12,10 @@ table,
 .background_table {
     background-color: lightyellow;
 }
+.contenedor{
+    display: flex;
+    flex-direction: row;
+}
 
 .btn_inicio {
     background-color: lightblue;
@@ -20,8 +24,25 @@ table,
     align-items: center;
 }
 
+.btn_logout  button {
+    background-color:lightblue;
+    border-color: transparent;
+    border-radius: 10%;
+    display: flex;
+    align-items: flex-end;
+   }
+
 .center_button {
     text-align: center;
+}
+
+.right{
+    margin-left: 70%;
+}
+
+.titleLogin{
+    color: blue;
+    text-align: left;
 }
 
 .header {
