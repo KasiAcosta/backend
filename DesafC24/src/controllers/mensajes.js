@@ -1,37 +1,38 @@
-const config = require ("../config/dbConfig.js")
-const mongoose = require("mongoose");
-const { normalizeMsj } = require("./normalizr.js");
+const config =require("../config/dbConfig.js")
+const mongoose =require("mongoose");
+const {normalizeMsj}=require("./normalizr.js")
 
 
-try{
+
+try {
     mongoose.connect(config.mongoDb.url, config.mongoDb.options)
-    console.log("Conectado a mongoDB");
-} catch(error) {
+} catch (error) {
     console.log(error);
 };
 
 const mongooseSchema = new mongoose.Schema({
-    author:{
-        id: {type: String, required: true, max: 100},
+    author: {
+        id: { type: String, required: true, max: 100 },
         nombre: { type: String, required: true, max: 100 },
         apellido: { type: String, required: true, max: 50 },
         edad: { type: Number, required: true },
         alias: { type: String, required: true },
         avatar: { type: String, required: true, max: 100 },
         timestamp: { type: Date, default: Date.now }
-
     },
     text: { type: String, required: true, max: 400 }
 });
 
 const msjModel = mongoose.model('mensajes', mongooseSchema);
 
+
+
 const saveMsjs = async (msj) => {
     const newMsj = new msjModel(msj);
-    try{
+    try {
         newMsj.save()
-    } catch (error){
-        console.log(error);
+    } catch (error) {
+        throw new Error(error);
     }
 }
 
@@ -39,11 +40,10 @@ const getMsjs = async () => {
     try {
         const mensajes = await msjModel.find();
         return normalizeMsj(mensajes);
-
-    }catch(error){
-        console.log(error);
+    } catch (error) {
+        throw new Error(error);
     }
-
 }
 
-module.exports= {saveMsjs, getMsjs}
+
+module.exports={saveMsjs,getMsjs}

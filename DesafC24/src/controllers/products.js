@@ -1,9 +1,9 @@
 const { faker } = require("@faker-js/faker");
 
-const createFakerProducts = async() => {
+const createFakeProducts = async() => {
 
     let products = [];
-    for(let i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++) {
         const product = {
             name: faker.commerce.product(),
             price: faker.commerce.price(),
@@ -14,4 +14,4 @@ const createFakerProducts = async() => {
     return products;
 }
 
-module.exports = { createFakerProducts }
+module.exports = { createFakeProducts }

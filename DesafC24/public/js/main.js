@@ -38,7 +38,7 @@ botonEnviar.addEventListener('click', (e) => {
     socket.emit('enviarMensaje', mensaje);
 })
 
-//normalizr esquemas
+//NORMALIZAR ESQUEMAS
 const authorsSchema = new normalizr.schema.Entity('authors');
 const msjSchema = new normalizr.schema.Entity('mensajes', { author: authorsSchema }, { idAttribute: 'id' });
 const fileSchema = [msjSchema]
@@ -53,11 +53,16 @@ const renderMsj = (msj) => {
     })
 }
 
+//DESNORMALIZAR ESQUEMAS
+
 socket.on('mensajes', (msj) => {
     const denormMsjs = normalizr.denormalize(msj.result, fileSchema, msj.entities);
     renderMsj(denormMsjs);
     renderComp(msj, denormMsjs);
 })
+
+//RENDERIZAR MENSAJES
+
 
 const renderComp = (msj, denormMsjs) => {
     const comp = document.getElementById("compresion");
@@ -67,23 +72,23 @@ const renderComp = (msj, denormMsjs) => {
     comp.innerHTML = `(Compresion: ${compresion}%)`;
 }
 
-//log
+//LOGIN-LOGOUT 
 
 fetch ("/getUserName")
 .then(response => response.json())
-.then(data =>{
-    userName = data.user;
-    document.getElementById("userName").innerHTML=
-    `<div class = "titleLogin">Bienvenid@ ${userName}</div> `
-})
-.catch(error => console.log(error))
+ .then (data=>{
+    userName=data.user;
+    document.getElementById("userName").innerHTML=`<div class="titleLogin">Bienvenid@ ${userName}</div>`
+ })
+ .catch(error=>console.log(error))
 
+ //logout con loading screen
 document.getElementById("logout").addEventListener
 ('click', (e) => {
     e.preventDefault()
     fetch("/logout")
-    .then(response => response.json())
-    .finally(() => {
-        window.location.href = "loguotMsj";
-    })
+        .then(response => response.json())
+        .finally(() => {
+            window.location.href = "/logoutMsj";
+        })
 })

@@ -1,73 +1,92 @@
 const express=require("express");
 const routerProducto=require("./src/routes/routes.js")
-const{Server:http}=require("http");
+const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
-const {saveMsjs, getMsjs} = require ("./src/controllers/mensajes.js");
-const cookieParser = require("cookie-parser");
-const session = require ("express-session");
-const MongoStore = require ("connect-mongo");
+const {saveMsjs, getMsjs}=require ("./src/controllers/mensajes.js");
+const cookieParser=require("cookie-parser")
+const session =require("express-session")
+const MongoStore=require("connect-mongo")
 
 const app = express();
 const httpserver = http(app)
 const io = new ioServer(httpserver)
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
+app.use("/public", express.static('./public/'));
 app.use(express.json());
-app.use(express.urlencoded({extended: true }));
+app.use(express.urlencoded({ extended: true }));
+
+// //defino __dirname para poder usar la carpeta public
+// const path=require('path');
+// const { fileURLToPath }=require('url');
+// // __filename = fileURLToPath(import.meta.url);
+// // const __dirname = path.dirname(__filename);
 
 app.use('/api/', routerProducto);
 
 app.use(cookieParser());
-
 app.use(session({
-    store: MongoStore.create({ mongoUrl: 'mongodb+srv://kasiacosta:2!3iyCbUaK3Y9r9@cluster0.sj9ho85.mongodb.net/ecommerce?retryWrites=true&w=majority'}),
+    store: MongoStore.create({ mongoUrl: 'mongodb+srv://kasiacosta:2!3iyCbUaK3Y9r9@cluster0.sj9ho85.mongodb.net/ecommerce?retryWrites=true&w=majority' }),
     secret: 'shh',
     resave: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 60 * 10000
     }
-})
-);
+}));
 
-app.get("/", (req, res) =>{
+
+
+app.get("/", (req,res)=>{
+
     try{
-        if(req.session.user){
-            res.sendFile(__dirname + ('/public/index.html'))
-        }else{
-            res.sendFile(__dirname + ('/views/login.html'))
+        if (req.session.user){
+           res.sendFile(__dirname + ('/public/index.html'))
         }
-    }catch(error){
-        console.log(error)
+        else
+        {
+            res.sendFile(__dirname + ('/src/views/login.html'))
+        }
     }
+    catch (error){
+     console.log(error)
+    }
+
 })
 
-//nombre usuario session
+// DEFINO EL NOMBRE DE USUARIO DE LA SESSION
 
 app.post('/setUserName', (req, res) => {
     req.session.user = req.body.user;
-    process.env.USER = req.body.user;
-    const usuario = process.env.USER;
+    process.env.USER=req.body.user;
+    const usuario=process.env.USER;
     res.redirect('/');
 })
 
-app.get("/getUserName", (req, res) =>{
+
+
+//TOMO EL USERNAME POR SESSION
+
+app.get("/getUserName",(req,res)=>{
     try{
-        if(req.session.user){
-            const user = process.env.USER;
+        if (req.session.user){
+            const user=process.env.USER;
             res.send({
                 user,
-            })
-        }else{
-            res.send({
-                username: "No existe el usuario"
+                
             })
         }
-    }catch(error){
+        else
+        res.send({
+            username:"no existe el usuario"
+        })
+    }
+    catch(error){
         console.log(error)
     }
 })
 
+//RECUPERO EL NOMBRE YA EN SESION INICIADA
 app.get('/getUserNameEnv', (req, res) => {
     const user = process.env.USER;
     res.send({
@@ -75,38 +94,41 @@ app.get('/getUserNameEnv', (req, res) => {
     })
 })
 
-io.on('connection', async (socket) =>{
+
+io.on('connection', async (socket) => {
     console.log('Usuario conectado');
-    socket.on('enviarMensaje', (msj) =>{
+    socket.on('enviarMensaje', (msj) => {
         saveMsjs(msj);
     })
 
     socket.emit ('mensajes', await getMsjs());
 })
 
-//Deslogueo
+// DESLOGUEO DE USUARIO
 
-app.get('/loguot', (req, res) =>{
-    try{
-        req.session.destroy((err) =>{
-            if (err){
+app.post('/logout', (req, res) => {
+    try {
+        req.session.destroy((err) => {
+            if (err) {
                 console.log(err);
-            }else{
+            } else {
                 res.redirect('/logout');
             }
         })
-    }catch(err){
+    } catch (err) {
+        console.log(err);
+    }
+})
+app.get('/logoutMsj', (req, res) => {
+    try {
+        res.sendFile(__dirname + '/src/views/logout.html');
+    }
+    catch (err) {
         console.log(err);
     }
 })
 
-app.get('/logoutMsj', (req, res) => {
-    try{
-        res.sendFile(__dirname + '/views/loguot.html');
-    }catch(err){
-        console.log(err);
-    }
-})
+
 
 const PORT = process.env.PORT || 8080;
 
