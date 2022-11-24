@@ -82,6 +82,10 @@ fetch ("/getUserName")
  })
  .catch(error=>console.log(error))
 
+ //loading screen
+ const spinner = document.getElementById("spinner");
+ spinner.style.display = "none";
+
  //logout con loading screen
 document.getElementById("logout").addEventListener
 ('click', (e) => {
