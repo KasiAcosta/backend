@@ -1,0 +1,32 @@
+2022/12/05 22:22:08 [emerg] 11524#13024: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:22:22 [emerg] 6240#1252: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:22:51 [emerg] 7196#10004: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:30:49 [emerg] 13056#4548: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:30:55 [emerg] 10256#14168: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:30:56 [emerg] 9936#12500: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:30:59 [emerg] 1228#496: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:31:01 [emerg] 10816#1784: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:34:47 [emerg] 11620#11780: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:34:58 [emerg] 1792#8868: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:18 [emerg] 1072#7832: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:20 [emerg] 1352#4992: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:21 [emerg] 13980#10868: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:21 [emerg] 6560#9564: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:22 [emerg] 8968#11328: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:36:22 [emerg] 8920#7108: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:42:56 [emerg] 13772#12420: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:43:40 [emerg] 12628#10876: bind() to 0.0.0.0:80 failed (10013: Intento de acceso a un socket no permitido por sus permisos de acceso)
+2022/12/05 22:45:59 [error] 8972#6880: *1 CreateFile() "C:\Program Files\nginx-1.23.2/html/favicon.ico" failed (2: El sistema no puede encontrar el archivo especificado), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8083", referrer: "http://localhost:8083/"
+2022/12/07 21:48:04 [error] 8908#9908: *1 CreateFile() "C:\Program Files\nginx-1.23.2/html/favicon.ico" failed (2: El sistema no puede encontrar el archivo especificado), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8083", referrer: "http://localhost:8083/"
+2022/12/07 22:05:25 [notice] 1864#10592: signal process started
+2022/12/07 22:05:45 [error] 11784#6892: *4 CreateFile() "C:\Program Files\nginx-1.23.2/html/favicon.ico" failed (2: El sistema no puede encontrar el archivo especificado), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8082", referrer: "http://localhost:8082/"
+2022/12/08 10:31:00 [emerg] 7772#6372: unexpected "}" in C:\Program Files\nginx-1.23.2/conf/nginx.conf:55
+2022/12/08 10:32:05 [emerg] 9972#4236: unknown directive "proxy_pass:" in C:\Program Files\nginx-1.23.2/conf/nginx.conf:54
+2022/12/08 10:36:12 [error] 7116#8280: *1 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3333/datos", host: "localhost:8082"
+2022/12/08 10:36:14 [error] 7116#8280: *1 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3334/datos", host: "localhost:8082"
+2022/12/08 10:36:14 [error] 7116#8280: *1 CreateFile() "C:\Program Files\nginx-1.23.2/html/favicon.ico" failed (2: El sistema no puede encontrar el archivo especificado), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost:8082", referrer: "http://localhost:8082/datos"
+2022/12/08 10:48:47 [error] 7116#8280: *6 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3334/datos", host: "localhost:8082"
+2022/12/08 10:48:49 [error] 7116#8280: *6 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3333/datos", host: "localhost:8082"
+2022/12/08 10:55:00 [notice] 9640#9996: signal process started
+2022/12/08 10:55:16 [error] 3880#9172: *11 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3334/datos", host: "localhost:8082"
+2022/12/08 10:55:18 [error] 3880#9172: *11 connect() failed (10061: No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión) while connecting to upstream, client: 127.0.0.1, server: localhost, request: "GET /datos HTTP/1.1", upstream: "http://192.168.100.46:3333/datos", host: "localhost:8082"
