@@ -1,9 +1,9 @@
 const express = require("express");
-const routerProducto = require("./routes/routes.js")
+const routerProducto = require("./src/routes/routes.js")
 const { Server: http } = require("http");
 const { Server: ioServer } = require("socket.io");
-const User = require("./schema/schemaUser.js")
-const { saveMsjs, getMsjs } = require("./controllers/mensajes.js");
+const User = require("./src/schema/schemaUser.js")
+const { saveMsjs, getMsjs } = require("./src/controllers/mensajes.js");
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
 const MongoStore = require("connect-mongo")
@@ -13,7 +13,7 @@ const child = fork("./child.js")
 
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require("passport");
-const { comparePassword, hashPassword } = require("../utils")
+const { comparePassword, hashPassword } = require("./utils")
 
 
 const { Types } = require("mongoose");
