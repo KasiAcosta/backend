@@ -312,6 +312,7 @@ app.post("/login", passport.authenticate("login", {
 });
 
 //==
+const PORT = process.env.PORT || 8080;
 
 const server = httpserver.listen(args.p, () =>{
     console.log(`Server is running on port ${server.address().port}`);
