@@ -1,198 +1,128 @@
-const express = require("express");
-const routerProducto = require("./src/routes/routes.js")
-const { Server: http } = require("http");
-const { Server: ioServer } = require("socket.io");
-const User = require("./src/schema/schemaUser.js")
-const { saveMsjs, getMsjs } = require("./src/controllers/mensajes.js");
-const cookieParser = require("cookie-parser")
-const session = require("express-session")
-const MongoStore = require("connect-mongo")
-
-const { fork } = require('child_process')
-const child = fork("./child.js")
-
-const LocalStrategy = require('passport-local').Strategy;
+const express=require("express");
+ const {routerProducto,routerCarrito}=require("./src/routes/routes.js")
+const{Server:http}=require ("http");
+const {Server:ioServer}=require ("socket.io");
+const {saveMsjs, getMsjs, sendWhatsapp, sendMail, sendSms,deleteCartBuy}=require ("./src/controllers/mensajes.js")
+const session =require("express-session")
+const MongoStore=require("connect-mongo");
 const passport = require("passport");
-const { comparePassword, hashPassword } = require("./utils")
+const { db } = require("./src/schema/schemaCarts.js");
+const {
+  loggerDev,
+  loggerProd
+} = require("./public/js/logger_config.js");
+const NODE_ENV = process.env.NODE_ENV || "development";
+const logger = NODE_ENV === "production"
+? loggerProd
+: loggerDev
 
-
-const { Types } = require("mongoose");
-
-//
 const cluster = require("cluster");
 const {cpus} = require('os');
 const cpuNum = cpus().length;
-//
 
-//logger//
-require("dotenv").config();
-const pino = require('pino')
-const loggerError = pino('error.log')
-const loggerWarn = pino('warning.log')
-const loggerInfo = pino()
-
-loggerError.level = 'error'
-loggerWarn.level = 'warn'
-loggerInfo.level = 'info'
-
-//const { createSocket } = require("dgram");
-
-const yargs = require("yargs");
-const args = yargs(process.argv.slice(2))
-
-.alias({
-    m: "modo",
-    p: "puerto",
-    d: "debug",
-})
-.default({
-    modo: "FORK",
-    puerto: 8080,
-    debug: false
-})
-.argv
-
-const modoCluster = args.m === "CLUSTER";
+const modoCluster = false;
 
 if(modoCluster){
-    console.log("Se iniciara en modo Cluster")
-}else{
-    console.log("Se iniciara en modo FORK")
+  console.log("Se iniciará en modo CLUSTER")
+}
+else{
+  console.log("Se iniciará en modo FORK")
 }
 
-/////
+if (modoCluster && cluster.isPrimary) {
+  console.log(`Cluster iniciado. CPUS: ${cpuNum}`);
+  console.log(`PID: ${process.pid}`);
+  for (let i = 0; i < cpuNum; i++) {
+    cluster.fork();
+  }
 
-if(modoCluster && cluster.isPrimary){
-    console.log(`Cluster iniciado. CPUS: ${cpuNum}`);
-    console.log(`PID: ${process.pid}`);
-    for(let i = 0; i < cpuNum; i++ ){
-        cluster.fork();
-    }
+  cluster.on("exit", worker => {
+    console.log(`${new Date().toLocaleString()}: Worker ${worker.process.pid} died`);
+    cluster.fork();
+  });
+} else {
 
-    cluster.on("exit", worker =>{
-        console.log(`${new Date().toLocaleString()}:
-        Worker ${worker.process.pid} died`);
-        cluster.fork();
-    });
-}else{
+
 const app = express();
 const httpserver = http(app)
 const io = new ioServer(httpserver)
 
-
 app.use("/public", express.static('./public/'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/api/productos', routerProducto);
+app.use('/api/carritos', routerCarrito);
 
-app.use('/api/', routerProducto);
-
+//CONEXION A DB MONGO
 
 app.use(session({
-    secret: 'STRING_TO_SING_SESSION_ID',
+    secret: 'STRING_TO_SIGN_SESSION_ID',
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({
-        mongoUrl: process.env.URL_BD,
-        retries: 0,
-        ttl: 10 * 60,
+      mongoUrl: 'mongodb+srv://kasiacosta:2!3iyCbUaK3Y9r9@cluster0.sj9ho85.mongodb.net/ecommerce?retryWrites=true&w=majority',
+      retries: 0,
+      ttl: 10 * 60 , // 10 min
     }),
-}));
+  })
+);
+
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-//Log user
-
-passport.use("login", new LocalStrategy(async (username, password, done) => {
-    const user = await User.findOne({ username });
-    if(user ==""){
-        const passHash = user.password;
-    if (!user || !comparePassword(password, passHash)) {
-        return done(null, null, { message: "Invalid username or password" });
-    }
-    }
-    return done(null, user);
-}));
-
-//Registro de usuario
-
-passport.use("signup", new LocalStrategy({
-    passReqToCallback: true
-},
-    async (req, username, password, done) => {
-        const user = await User.findOne({ username });
-        if (user) {
-            return done(new Error("Usuario ya existe"),
-             null);
-        }
-        const address = req.body.address;
-        const hashedPassword = hashPassword(password);
-        const newUser = new User({ username, password: hashedPassword, address });
-        await newUser.save();
-        return done(null, newUser);
-    }));
-
-passport.serializeUser((user, done) => {
-    done(null, user._id);
-});
-
-passport.deserializeUser(async (id, done) => {
-    id = Types.ObjectId(id);
-    const user = await User.findById(id);
-    done(null, user);
-});
-
-//RECUPERO EL NOMBRE YA EN SESION INICIADA
-
-app.get('/loginEnv', (req, res) => {
-    loggerInfo.info(`Peticion entrante --> Ruta: ${req.url}, metodo: ${req.method}`)
-
-    process.env.USER = req.user.address;
-    const user = process.env.USER;
-    loggerError.error('error de datos')
-    loggerInfo.error('error de datos')
-    res.send({
-        user
-    })
+ //   //RECUPERO EL NOMBRE YA EN SESION INICIADA
+ app.get('/loginEnv', (req, res) => {
+  process.env.USER=req.user.name;
+  process.env.avatar=req.user.avatar;
+  const user = process.env.USER;
+  const avatar=process.env.avatar;
+  res.send({
+      user,avatar
+  })
+  
 })
 
-app.use((req, res, next)=>{
-    loggerInfo.info(`Peticion entrante --> Ruta: ${req.url}, metodo: ${req.method}`)
-    next()
+
+ //   //RECUPEROel ID DEL CARRO EN SECION INICIADA
+ app.get('/idCart', (req, res) => {
+  process.env.USER=req.user.name;
+  process.env.id=req.user.id;
+  process.env.avatar=req.user.avatar
+  const user = process.env.USER;
+  const id=process.env.id
+  const avatar=process.env.avatar
+  res.send({
+      user,id,avatar
+  })
+  
 })
 
-app.use('*', (req, res) => {
-    loggerWarn.warn('ruta incorrecta');
-    loggerInfo.warn('ruta incorrecta')
-    res.send("ruta incorrecta");
-});
 
 //RECUPERO EL NOMBRE YA EN SESION INICIADA
 app.get('/getUserNameEnv', (req, res) => {
-    loggerInfo.info(`Peticion entrante --> Ruta: ${req.url}, metodo: ${req.method}`)
-
-    const user = process.env.USER;
-    loggerError.error('error de datos')
-    loggerInfo.error('error de datos')
+  const user = process.env.USER;
+  logger.log("info",`Ingreso a la ruta${req.url}`)
     res.send({
-        user
-    })
+      user
+  })
 })
 
+app.get("/", (req,res)=>{
 
-
-app.get("/", (req, res) => {
-
-    try {
-        if (req.session.user) {
-            res.sendFile(__dirname + ('/public/index.html'))
+    try{
+        if (req.session.user){
+           res.sendFile(__dirname + ('/public/index.html'))
+           logger.log("info",`Ingreso a la ruta${req.url}`)
         }
-        else {
+        else
+        {
             res.sendFile(__dirname + ('/views/login.html'))
+            logger.log("info",`Ingreso a la ruta${req.url}`)
         }
     }
-    catch (error) {
-        console.log(error)
+    catch (error){
+     console.log(error)
     }
 
 })
@@ -200,50 +130,13 @@ app.get("/", (req, res) => {
 io.on('connection', async (socket) => {
     console.log('Usuario conectado');
     socket.on('enviarMensaje', (msj) => {
-        saveMsjs(msj);
+      saveMsjs(msj);
     })
 
-    socket.emit('mensajes', await getMsjs());
+    socket.emit ('mensajes', await getMsjs());
 })
 
-//DEFINO EL NOMBRE DE USUARIO DE LA SESSION
-
-app.post('/setUserName', (req, res) =>{
-    req.session.user = req.body.user;
-    process.env.USER = req.body.user;
-    const usuario = process.env.USER;
-    res.redirect('/');
-})
-
-//TOMO EL USERNAME DE LA SESSION
-
-app.get("/getUserName", (req, res) =>{
-    try{
-        if(req.session.user){
-            const user = process.env.USER;
-            res.send({
-                user,
-            })
-        }else
-        res.send({
-            username:"no existe el usuario"
-        })
-    }
-    catch(error){
-        console.log(error)
-    }
-})
-
-//RECUPERO EL NOMBRE YA EN SESION INICIO
-
-app.get('/getUserNameEnv', (req, res) =>{
-    const user = process.env.USER;
-    res.send({
-        user
-    })
-})
-
-// DESLOGUEO DE USUARIO
+// // DESLOGUEO DE USUARIO
 
 app.get('/logout', (req, res) => {
     try {
@@ -252,6 +145,7 @@ app.get('/logout', (req, res) => {
                 console.log(err);
             } else {
                 res.redirect('/logout');
+                logger.log("info",`Ingreso a la ruta${req.url}`)
             }
         })
     } catch (err) {
@@ -261,61 +155,101 @@ app.get('/logout', (req, res) => {
 app.get('/logoutMsj', (req, res) => {
     try {
         res.sendFile(__dirname + '/views/logout.html');
+        logger.log("info",`Ingreso a la ruta${req.url}`)
     }
     catch (err) {
         console.log(err);
     }
 })
 
-//==
-app.get("/info", (req, res) =>{
-    res.sendFile(__dirname + "/views/info.html");
-})
+app.get('/buyCart', async(req, res) => {
+  try{
+  process.env.USER=req.user.mail;
+  process.env.id=req.user.id;
+  process.env.name=req.user.name
+  process.env.phone=req.user.phone
+  // const idProductos=process.env.id
+   const id=parseInt( process.env.id)
+  const productos=await db.collection("carts").findOne({id:id})
+  console.log(productos)
+  const mail = process.env.USER;
+  const phone=process.env.phone
+  const name= process.env.name
+       sendWhatsapp(name,mail)
+       sendMail(name,mail,JSON.stringify(productos))
+       sendSms(phone)
+       deleteCartBuy(id)
+  res.redirect("/buySuccesfull")
+  logger.log("info",`Ingreso a la ruta${req.url}`)
+  
 
-app.get("/api/random", (req, res) =>{
-    const numsRandom = req.query.num || 500
-    child.send(numsRandom)
-    child.on('message', (msg) => {
-        res.end(msg)
-    })
+   }
+  catch(err){
+    console.log(err)
+  }
 })
-
-app.get("/login", (req, res) => {
-    const user = req.session.user;
+ 
+  app.get("/login", (req, res) => {
     res.sendFile(__dirname + "/views/login.html");
-});
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
 
-app.get("/signup", (req, res) => {
+  app.get("/signup", (req, res) => {
     res.sendFile(__dirname + "/views/register.html");
-});
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
 
-app.get("/loginFail", (req, res) => {
+  app.get("/loginFail", (req, res) => {
+    res.sendFile(__dirname + "/views/loginFail.html");
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
+
+  app.get("/signupFail", (req, res) => {
     res.sendFile(__dirname + "/views/signupFail.html");
-});
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
+  app.get("/buySucessful", (req, res) => {
+    res.sendFile(__dirname + "/views/buyCart.html");
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
+  app.get("/cart", (req, res) => {
+    res.sendFile(__dirname + "/views/cart.html");
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
+  app.get("/buySuccesfull", (req, res) => {
+    res.sendFile(__dirname + "/views/buyCart.html");
+    logger.log("info",`Ingreso a la ruta${req.url}`)
+  });
 
-app.get("/signupFail", (req, res) => {
-    res.sendFile(__dirname + "/views/signupFail.html");
-});
+  //LOGS DE RUTA NO ENCONTRADA EN ARCHIVO WARN.LOG
+  app.get("*", (req, res) => {
+    logger.log("warn",`Ruta no encontrada ${req.url}`)
+    res.status(400).send(`Ruta no encontrada ${req.url}`);
+  });
 
-app.post("/signup", passport.authenticate("signup", {
-    failureRedirect: "signupFail",
-}), (req, res) => {
+
+
+  app.post("/signup", passport.authenticate("signup", {
+    failureRedirect: "/signupFail",
+  }) , (req, res) => {  
     req.session.user = req.user;
     res.redirect("/login");
-});
-
-app.post("/login", passport.authenticate("login", {
+  });
+  
+  app.post("/login", passport.authenticate("login", {
     failureRedirect: "/loginFail",
-}), (req, res) => {
-    req.session.user = req.user;
-    res.redirect("/");
-});
+  }) ,(req, res) => {
+      req.session.user = req.user;
+      res.redirect('/');
+  });
 
-//==
+
+  
 const PORT = process.env.PORT || 8080;
 
-const server = httpserver.listen(args.p, () =>{
-    console.log(`Server is running on port ${server.address().port}`);
+const server = httpserver.listen(PORT, () => {
+    console.log(`Server is running on port: ${server.address().port}`);
 });
 server.on('error', error => console.log(`error running server: ${error}`));
+
 }

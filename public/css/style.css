@@ -40,9 +40,7 @@ table,
 }
 
 .right{
-    margin-left: 60%;
-    display: flex;
-    justify-content: space-around;
+    margin-left: 70%;
 }
 
 .titleLogin{
@@ -60,7 +58,7 @@ table,
     margin-left: 25%
 }
 
-#id,
+/* #id,
 #text,
 #nombre,
 #apellido,
@@ -69,7 +67,7 @@ table,
 #avatar,
 #alias {
     background-color: lightyellow;
-}
+} */
 
 .tamaño {
     width: 40px;

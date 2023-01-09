@@ -1,7 +1,16 @@
 const config =require("../config/dbConfig.js")
 const mongoose =require("mongoose");
 const {normalizeMsj}=require("./normalizr.js")
-
+const nodemailer= require('nodemailer');
+const { db } = require("../schema/schemaCarts.js");
+const {
+  loggerDev,
+  loggerProd
+} = require("../../public/js/logger_config.js");
+const NODE_ENV = process.env.NODE_ENV || "development";
+const logger = NODE_ENV === "production"
+? loggerProd
+: loggerDev
 
 
 try {
@@ -40,10 +49,40 @@ const getMsjs = async () => {
     try {
         const mensajes = await msjModel.find();
         return normalizeMsj(mensajes);
-    } catch (error) {
-        throw new Error(error);
+    }  catch(err) {
+      logger.log("error",err)
     }
 }
 
+  async function sendMail(name,mail,listCart) {
+    try {
+        await transporter.sendMail({
+          to:"antonietta.kessler@ethereal.email",
+          from:"kasiiacosta@gmail.com",
+          subject:`nuevo pedido de Nombre: ${name} Mail: ${mail}`,
+          html:`${listCart}`
+      });
+      }  catch(err) {
+        logger.log("error",err)
+      }
+    }
 
-module.exports={saveMsjs,getMsjs}
+    async function deleteCartBuy(idCart){
+      try{
+       await db.collection("carts").deleteOne({id:idCart});
+      }
+      catch(err) {
+        logger.log("error",err)
+      }
+    }
+    const transporter = nodemailer.createTransport({
+        service:"gmail",
+        host: 'smtp.gmail.email',
+        port: 587,
+        auth: {
+            user: 'sebykasiacosta@gmail.com',
+            pass: "sugganwfntvzhkat"
+        }
+      });
+
+      module.exports={saveMsjs,getMsjs,sendMail,deleteCartBuy}

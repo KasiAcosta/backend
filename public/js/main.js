@@ -1,6 +1,6 @@
 let socket = io();
 
-fetch("/api/productos-test")
+fetch("/api/productos")
     .then(response => response.json())
     .then(data => {
         renderTable(data);
@@ -11,35 +11,29 @@ function renderTable(data) {
     const table = document.getElementById("table");
     const html = data.map(element => {
         return (`<tr>
-        <td>${element.name}</td>
-        <td>${element.price}</td>
-        <td><img src="${element.image}" style="height:50px"></td>
+        <td>${element.nombre}</td>
+        <td>${element.precio}</td>
+        <td>${element.descripcion  }</td>
+        <td>${element.stock}</td>
+        <td><img src="${element.imagen}" style="height:50px"></td>
         </tr>`);
     }).join("");
     table.innerHTML += html;
 }
 
-fetch("/api/info")
-    .then(response => response.json())
-    .then(data => {
-        renderInfo(data);
-    })
-    .catch(error => console.log(error));
 
-function renderInfo(data) {
-    const info = document.getElementById("info");
+function renderCart(data) {
+    const table = document.getElementById("carrito");
     const html = data.map(element => {
-        return (`<br><br><div>
-        PID: ${element.pid}<br><br>
-        VERSION: ${element.version}<br><br>
-        MEMORIA: ${element.memoria}<br><br>
-        SISTEMA OPERATIVO: ${element.sistemaOperativo}<br><br>
-        CARPETA PROYECTO: ${element.carpeta}<br><br>
-        PATH: ${element.path}<br><br>
-        ARGUMENTO: ${element.argumento}<br><br>
-        </div><br><br>`);
+        return (`<tr>
+        <td>${element.nombre}</td>
+        <td>${element.precio}</td>
+        <td>${element.descripcion  }</td>
+        <td>${element.stock}</td>
+        <td><img src="${element.imagen}" style="height:50px"></td>
+        </tr>`);
     }).join("");
-    info.innerHTML += html;
+    table.innerHTML += html;
 }
 
 const ingresoMensaje = document.getElementById("ingresoMensaje");
@@ -60,6 +54,8 @@ botonEnviar.addEventListener('click', (e) => {
     }
     socket.emit('enviarMensaje', mensaje);
 })
+
+
 
 //NORMALIZAR ESQUEMAS
 const authorsSchema = new normalizr.schema.Entity('authors');
@@ -95,15 +91,37 @@ const renderComp = (msj, denormMsjs) => {
     comp.innerHTML = `(Compresion: ${compresion}%)`;
 }
 
+
 //LOGIN-LOGOUT 
 
 fetch ("/loginEnv")
 .then(response => response.json())
  .then (data=>{
     userName=data.user;
-    document.getElementById("userName").innerHTML=`<div class="titleLogin">Bienvenid@ ${userName}</div>`
+    avatar=data.avatar;
+    document.getElementById("userName").innerHTML=`<div class="titleLogin">Bienvenid@ ${userName} </div>
+    <div class="avatar"><img src=${avatar} class="avatar"></img></div>`
  })
  .catch(error=>console.log(error))
+
+fetch ("/idCart")
+.then(response => response.json())
+ .then (data=>{
+    userName=data.user;
+    avatar=data.avatar;
+    id=data.id;
+    document.getElementById("userName").innerHTML=`<div class="titleLogin">Bienvenid@ ${userName} </div>
+    <div class="avatar"><img src=${avatar} class="avatar"></img></div>`
+    .then(fetch(`/api/carritos/${id}/productos`)
+    .then(response => response.json())
+    .then(data => {
+        renderCart(data);
+    }))
+    .catch(error => console.log(error));
+
+ })
+
+
 
 //loading screen
 const spinner = document.getElementById("spinner");
@@ -120,3 +138,6 @@ document.getElementById("logout").addEventListener
                 window.location.href = "/logoutMsj";
             })
     })
+
+
+
