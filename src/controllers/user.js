@@ -100,7 +100,7 @@ passport.use("signup", new LocalStrategy({
   async function sendMailUser(user) {
     try {
       await transporter.sendMail({
-        to:"retete2854@sopulit.com",
+        to:"antonietta.kessler@ethereal.email",
         from:"iva12@ethereal.email",
         subject:"Nuevo Usuario Registrado",
         html:`${user}`
@@ -116,8 +116,8 @@ passport.use("signup", new LocalStrategy({
     host: 'smtp.gmail.email',
     port: 587,
     auth: {
-        user: 'andreshosch114@gmail.com',
-        pass: "pripxpboynmzhqev"
+        user: 'sebykasiacosta@gmail.com',
+        pass: "sugganwfntvzhkat"
     }
   });
   

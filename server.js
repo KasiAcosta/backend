@@ -175,9 +175,8 @@ app.get('/buyCart', async(req, res) => {
   const mail = process.env.USER;
   const phone=process.env.phone
   const name= process.env.name
-       sendWhatsapp(name,mail)
+       
        sendMail(name,mail,JSON.stringify(productos))
-       sendSms(phone)
        deleteCartBuy(id)
   res.redirect("/buySuccesfull")
   logger.log("info",`Ingreso a la ruta${req.url}`)
@@ -245,7 +244,7 @@ app.get('/buyCart', async(req, res) => {
 
 
   
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8081;
 
 const server = httpserver.listen(PORT, () => {
     console.log(`Server is running on port: ${server.address().port}`);
