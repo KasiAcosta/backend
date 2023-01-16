@@ -1,20 +1,24 @@
 const express=require("express");
- const {routerProducto,routerCarrito}=require("./src/routes/routes.js")
+const {routerProducto} = require("./src/routes/products.js")
+const {routerCarrito} = require("./src/routes/carts.js")
+
 const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
-const {saveMsjs, getMsjs, sendWhatsapp, sendMail, sendSms,deleteCartBuy}=require ("./src/controllers/mensajes.js")
+const {saveMsjs, getMsjs, sendMail, deleteCartBuy} = require ("./src/controllers/mensajes.js")
 const session =require("express-session")
 const MongoStore=require("connect-mongo");
 const passport = require("passport");
 const { db } = require("./src/schema/schemaCarts.js");
+
 const {
   loggerDev,
   loggerProd
-} = require("./public/js/logger_config.js");
+} = require("./src/loggers/logger_config.js");
 const NODE_ENV = process.env.NODE_ENV || "development";
 const logger = NODE_ENV === "production"
 ? loggerProd
 : loggerDev
+
 
 const cluster = require("cluster");
 const {cpus} = require('os');
@@ -71,7 +75,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
- //   //RECUPERO EL NOMBRE YA EN SESION INICIADA
+//RECUPERO EL NOMBRE YA EN SESION INICIADA
  app.get('/loginEnv', (req, res) => {
   process.env.USER=req.user.name;
   process.env.avatar=req.user.avatar;
@@ -84,7 +88,7 @@ app.use(passport.session());
 })
 
 
- //   //RECUPEROel ID DEL CARRO EN SECION INICIADA
+ //RECUPEROel ID DEL CARRO EN SECION INICIADA
  app.get('/idCart', (req, res) => {
   process.env.USER=req.user.name;
   process.env.id=req.user.id;
