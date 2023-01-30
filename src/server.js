@@ -1,19 +1,19 @@
 const express=require("express");
-const {routerProducto} = require("./src/routes/products.js")
-const {routerCarrito} = require("./src/routes/carts.js")
+const {routerProducto} = require("./routes/products.js")
+const {routerCarrito} = require("./routes/carts.js")
 
 const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
-const {saveMsjs, getMsjs, sendMail, deleteCartBuy} = require ("./src/controllers/mensajes.js")
+const {saveMsjs, getMsjs, sendMail, deleteCartBuy} = require ("./controllers/mongo/mensajes.js")
 const session =require("express-session")
 const MongoStore=require("connect-mongo");
 const passport = require("passport");
-const { db } = require("./src/schema/schemaCarts.js");
+const { db } = require("./schema/schemaCarts.js");
 
 const {
   loggerDev,
   loggerProd
-} = require("./src/loggers/logger_config.js");
+} = require("./loggers/logger_config.js");
 const NODE_ENV = process.env.NODE_ENV || "development";
 const logger = NODE_ENV === "production"
 ? loggerProd
@@ -22,6 +22,7 @@ const logger = NODE_ENV === "production"
 
 const cluster = require("cluster");
 const {cpus} = require('os');
+const { argv0 } = require("process");
 const cpuNum = cpus().length;
 
 const modoCluster = false;
@@ -64,7 +65,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({
-      mongoUrl: 'mongodb+srv://kasiacosta:2!3iyCbUaK3Y9r9@cluster0.sj9ho85.mongodb.net/ecommerce?retryWrites=true&w=majority',
+      mongoUrl: process.env.DB,
       retries: 0,
       ttl: 10 * 60 , // 10 min
     }),

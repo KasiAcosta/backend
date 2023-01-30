@@ -1,4 +1,4 @@
-const ProdMongoController=require('../controllers/products.js')
+const ProdMongoController=require('../../controllers/mongo/productsMongo.js')
 
 class ProductosDaoMongo extends ProdMongoController{
     constructor(){

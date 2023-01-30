@@ -3,20 +3,15 @@ const mongoose=require("mongoose")
 const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
 const User=require("..//../src/schema/schemaUser.js")
-const {saveMsjs, getMsjs}=require ("../../src/controllers/mensajes.js")
-const session =require("express-session")
-const MongoStore=require("connect-mongo");
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require("passport");
-const { comparePassword, hashPassword } = require("../../utils.js")
+const { comparePassword, hashPassword } = require("../services/utils.js")
 // const {connect} = require('./src/config/dbConfig.js');
 const { Types } = require("mongoose");
-
 const nodemailer= require('nodemailer');
 const { argv0 } = require("process");
 const { db } = require("..//..//src/schema/schemaProducts.js");
-const CarritoDaoMongo = require("../dao/cartDao.js");
-const { captureRejectionSymbol } = require("events");
+
 
 const app = express();
 const httpserver = http(app)

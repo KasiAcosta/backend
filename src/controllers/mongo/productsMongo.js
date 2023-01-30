@@ -2,7 +2,7 @@ const mongoose=require("mongoose")
 const {
     loggerDev,
     loggerProd
-  } = require("../../public/js/logger_config.js");
+  } = require("../../loggers/logger_config.js");
   const NODE_ENV = process.env.NODE_ENV || "development";
   const logger = NODE_ENV === "production"
   ? loggerProd

@@ -1,12 +1,13 @@
-const config =require("../config/dbConfig.js")
+const config =require("../../config/dbConfig.js")
 const mongoose =require("mongoose");
-const {normalizeMsj}=require("./normalizr.js")
+const {normalizeMsj}=require("../normalizr.js")
+
 const nodemailer= require('nodemailer');
-const { db } = require("../schema/schemaCarts.js");
+const { db } = require("../../schema/schemaCarts.js");
 const {
   loggerDev,
   loggerProd
-} = require("../../public/js/logger_config.js");
+} = require("../../loggers/logger_config.js");
 const NODE_ENV = process.env.NODE_ENV || "development";
 const logger = NODE_ENV === "production"
 ? loggerProd
@@ -54,11 +55,13 @@ const getMsjs = async () => {
     }
 }
 
+
+
   async function sendMail(name,mail,listCart) {
     try {
         await transporter.sendMail({
-          to:"antonietta.kessler@ethereal.email",
-          from:"kasiiacosta@gmail.com",
+          to:"retete2854@sopulit.com",
+          from:"iva12@ethereal.email",
           subject:`nuevo pedido de Nombre: ${name} Mail: ${mail}`,
           html:`${listCart}`
       });
@@ -81,7 +84,7 @@ const getMsjs = async () => {
         port: 587,
         auth: {
             user: 'sebykasiacosta@gmail.com',
-            pass: "sugganwfntvzhkat"
+            pass: "pripxpboynmzhqev"
         }
       });
 

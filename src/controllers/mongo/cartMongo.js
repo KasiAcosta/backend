@@ -1,9 +1,9 @@
 const mongoose=require("mongoose");
-const { db } = require("../schema/schemaUser");
+const { db } = require("../../schema/schemaUser");
 const {
     loggerDev,
     loggerProd
-  } = require("../../public/js/logger_config.js");
+  } = require("../../loggers/logger_config.js");
   const NODE_ENV = process.env.NODE_ENV || "development";
   const logger = NODE_ENV === "production"
   ? loggerProd
@@ -118,9 +118,4 @@ module.exports=class CartMongoController {
         
     }
     
-} 
-
-
-   
-
-
+}
