@@ -1,5 +1,5 @@
 const mongoose=require("mongoose");
-const { db } = require("../../schema/schemaUser");
+const { db } = require("../../docs/schema/schemaUser");
 const {
     loggerDev,
     loggerProd

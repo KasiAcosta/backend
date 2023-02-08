@@ -2,7 +2,7 @@ const express=require("express");
 const mongoose=require("mongoose")
 const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
-const User=require("..//../src/schema/schemaUser.js")
+const User=require("../docs/schema/schemaUser.js")
 const LocalStrategy = require('passport-local').Strategy;
 const passport = require("passport");
 const { comparePassword, hashPassword } = require("../services/utils.js")
@@ -10,7 +10,7 @@ const { comparePassword, hashPassword } = require("../services/utils.js")
 const { Types } = require("mongoose");
 const nodemailer= require('nodemailer');
 const { argv0 } = require("process");
-const { db } = require("..//..//src/schema/schemaProducts.js");
+const { db } = require("../docs/schema/schemaProducts.js");
 
 
 const app = express();

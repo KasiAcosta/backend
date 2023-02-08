@@ -1,9 +1,8 @@
 const config =require("../../config/dbConfig.js")
 const mongoose =require("mongoose");
 const {normalizeMsj}=require("../normalizr.js")
-
 const nodemailer= require('nodemailer');
-const { db } = require("../../schema/schemaCarts.js");
+const { db } = require("../../docs/schema/schemaCarts.js");
 const {
   loggerDev,
   loggerProd
@@ -55,13 +54,11 @@ const getMsjs = async () => {
     }
 }
 
-
-
   async function sendMail(name,mail,listCart) {
     try {
         await transporter.sendMail({
-          to:"retete2854@sopulit.com",
-          from:"iva12@ethereal.email",
+          to:"antonietta.kessler@ethereal.email",
+          from:"kasiiacosta@gmail.com",
           subject:`nuevo pedido de Nombre: ${name} Mail: ${mail}`,
           html:`${listCart}`
       });
@@ -84,7 +81,7 @@ const getMsjs = async () => {
         port: 587,
         auth: {
             user: 'sebykasiacosta@gmail.com',
-            pass: "pripxpboynmzhqev"
+            pass: "sugganwfntvzhkat"
         }
       });
 

@@ -1,14 +1,12 @@
 const dotenv =require ('dotenv')
 dotenv.config()
-const args=`${process.argv.slice(2)}`||"mongo"
 
 let productoDao
 let cartDao
 let userDao
-let messagesDao
 
 
-switch (args){
+switch (process.env.DATABASE){
     case 'mongo':{
         const  ProductosDaoMongo =  require('./mongo/ProductsDaoMongo.js')
         const cartDaoMongo =  require('./mongo/cartDaoMongo.js')
@@ -19,16 +17,6 @@ switch (args){
        productoDao=ProductosDaoMongo
        cartDao=cartDaoMongo
        userDao=userDaoMongo;
-       break;
-    }
-    case 'firebase':{
-        const  cartDaoFirebase =  require('./firebase/cartDaoFirebase.js')
-        const productsDaoFirebase =  require('./firebase/productsDaoFirebase.js')
-        const messagesDaoFirebase =  require('./firebase/messagesDaoFirebase.js')
-
-       productoDao=productsDaoFirebase
-       cartDao=cartDaoFirebase
-       messagesDao=messagesDaoFirebase
        break;
     }
 }

@@ -1,9 +1,9 @@
 const {Router}=require("express");
-const { productoDao }= require("../dao/index.js")
+const { productoDao }= require("../../dao/index.js")
 
 const routerProducto = Router();
-const Singleton = require("../services/singletonP.js")
-const productos2 = new productoDao;
+const Singleton = require("../../services/singletonP")
+const productos2=new productoDao;
 let pruebaSingleton = Singleton.getInstance();
 pruebaSingleton.crearProductos(productos2)
 

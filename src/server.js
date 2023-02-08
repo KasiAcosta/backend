@@ -1,14 +1,21 @@
 const express=require("express");
-const {routerProducto} = require("./routes/products.js")
-const {routerCarrito} = require("./routes/carts.js")
-
+const {routerProducto} = require("./docs/routes/products.js")
+const {routerCarrito} = require("./docs/routes/carts.js")
 const{Server:http}=require ("http");
 const {Server:ioServer}=require ("socket.io");
 const {saveMsjs, getMsjs, sendMail, deleteCartBuy} = require ("./controllers/mongo/mensajes.js")
 const session =require("express-session")
 const MongoStore=require("connect-mongo");
 const passport = require("passport");
-const { db } = require("./schema/schemaCarts.js");
+const app = express();
+const httpserver = http(app)
+const io = new ioServer(httpserver)
+const swaggerUi =require('swagger-ui-express') 
+const swaggerDoc=require('swagger-jsdoc') 
+const  SwaggerOptions =require('./swagger.config.js')
+const specs=swaggerDoc(SwaggerOptions)
+app.use('/api/docs',swaggerUi.serve,swaggerUi.setup(specs))
+const { db } = require("./docs/schema/schemaCarts.js");
 
 const {
   loggerDev,
@@ -48,9 +55,7 @@ if (modoCluster && cluster.isPrimary) {
 } else {
 
 
-const app = express();
-const httpserver = http(app)
-const io = new ioServer(httpserver)
+
 
 app.use("/public", express.static('./public/'));
 app.use(express.json());

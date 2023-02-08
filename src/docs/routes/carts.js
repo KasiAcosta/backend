@@ -1,9 +1,9 @@
 const {Router}=require("express");
-const { cartDao }= require("../dao/index.js")
+const { cartDao }= require("../../dao/index.js")
 const { db } = require("../schema/schemaProducts.js");
 
 const routerCarrito = Router();
-const Singleton = require("../services/singletonC.js")
+const Singleton = require("../../services/singletonC.js")
 const carritos2 = new cartDao;
 let singletonCarrito = Singleton.getInstance();
 singletonCarrito.crearCarritos(carritos2)
